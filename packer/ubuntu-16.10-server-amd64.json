@@ -54,8 +54,18 @@
       "type": "virtualbox-iso",
       "vm_name": "{{ user `PACKER_BOX_NAME` }}",
       "vboxmanage": [
-        ["modifyvm", "{{.Name}}", "--memory", "384"],
-        ["modifyvm", "{{.Name}}", "--cpus", "2"]
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--memory",
+          "384"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--cpus",
+          "2"
+        ]
       ],
       "virtualbox_version_file": ".vbox_version"
     },
@@ -126,6 +136,22 @@
         "scripts/cleanup.sh"
       ],
       "type": "shell"
+    },
+    {
+      "execute_command": "echo 'vagrant'|{{.Vars}} sudo -S -E bash '{{.Path}}'",
+      "scripts": [
+        "scripts/update.sh",
+        "scripts/sshd.sh",
+        "scripts/networking.sh",
+        "scripts/sudoers.sh",
+        "scripts/vagrant.sh",
+        "scripts/vmtools.sh",
+        "scripts/ruby.sh",
+        "scripts/chef.sh",
+        "scripts/filesystem.sh",
+        "scripts/cleanup.sh"
+      ],
+      "type": "shell"
     }
   ],
   "post-processors": [
@@ -136,14 +162,17 @@
         "output": "../builds/{{.Provider}}/{{ user `PACKER_BOX_NAME` }}_{{.Provider}}.box"
       },
       {
-          "type": "checksum",
-          "checksum_types": ["sha256","sha512"],
-          "output": "../builds/CHECKSUMS"
+        "type": "checksum",
+        "checksum_types": [
+          "sha256",
+          "sha512"
+        ],
+        "output": "../builds/CHECKSUMS"
       },
       {
-          "type": "manifest",
-          "filename": "../builds/{{ user `PACKER_BOX_NAME` }}.manifest.json",
-          "strip_path": true
+        "type": "manifest",
+        "filename": "../builds/{{ user `PACKER_BOX_NAME` }}.manifest.json",
+        "strip_path": true
       }
     ]
   ]
